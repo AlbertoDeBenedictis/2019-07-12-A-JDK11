@@ -25,7 +25,7 @@ public class Model {
 	public List<Food> getCibi(int portions) {
 
 		this.grafo = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		
+
 		this.cibi = this.dao.getFoodsByPortions(portions);
 
 		// Aggiungo i vertici
@@ -62,15 +62,26 @@ public class Model {
 			// Prendo l'arco che collega il vicino, quindi il peso corrispondente
 			DefaultWeightedEdge arco = this.grafo.getEdge(f, cibo);
 			Double pesoArco = this.grafo.getEdgeWeight(arco);
-			
+
 			// Inserisco nella lista
-			listaCibi.add(new FoodCalories(cibo,pesoArco));
-			
+			listaCibi.add(new FoodCalories(cibo, pesoArco));
+
 		}
-		
+
 		Collections.sort(listaCibi);
 
 		return listaCibi;
+	}
+
+	public String simula(Food cibo, int K) {
+
+		Simulator sim = new Simulator(this.grafo, this);
+		sim.setK(K);
+		sim.init(cibo);
+		sim.run();
+		String messaggio = String.format("Preparati %d cibi in %f minuti", sim.getCibiPreparati(),
+				sim.getTempoPreparazione());
+		return messaggio;
 	}
 
 }
